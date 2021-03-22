@@ -11,14 +11,38 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private Sprite[] sprites;
 
+    [SerializeField]
+    private int bulletSpeed;
+
+    [SerializeField]
+    private string enemyName;
+
+
+    [SerializeField]
+    private GameObject bulletA;
+    [SerializeField]
+    private GameObject bulletB;
+
+    public GameObject player;
+
+    private float curShotDelay = 0f;
+    private float maxShotDelay = 0.5f;
+
+
+
+    public float Speed {
+        get{
+            return speed;
+        }
+        set{
+            speed = value;
+        }
+}
     SpriteRenderer spriteRenderer;
-    Rigidbody2D rb;
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        rb.velocity = Vector2.down * speed;
     }
 
     void Start()
@@ -29,7 +53,46 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Fire();
+        Reload();
+    }
 
+    void Fire()
+    {
+        if (curShotDelay < maxShotDelay)
+        {
+            return;
+        }
+
+        if(enemyName == "Enemy A")
+        {
+            GameObject bullet = Instantiate(bulletA, transform.position, transform.rotation);
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+
+            Vector3 dirVec = (player.transform.position - transform.position).normalized;
+            
+            rb.AddForce(dirVec * bulletSpeed, ForceMode2D.Impulse);
+        }
+        else if(enemyName == "Enemy C")
+        {
+            GameObject bulletR = Instantiate(bulletB, transform.position + Vector3.right * 0.3f, transform.rotation);
+            GameObject bulletL = Instantiate(bulletB, transform.position + Vector3.left * 0.3f, transform.rotation);
+
+            Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
+            Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
+            Vector3 dirVec = (player.transform.position - transform.position).normalized;
+            rbR.AddForce(dirVec * bulletSpeed, ForceMode2D.Impulse);
+            rbL.AddForce(dirVec * bulletSpeed, ForceMode2D.Impulse);
+
+
+        }
+        curShotDelay = 0;
+        
+    }
+
+    void Reload()
+    {
+        curShotDelay += Time.deltaTime;
     }
 
     void OnHit(int dmg)

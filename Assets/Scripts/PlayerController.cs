@@ -30,10 +30,13 @@ public class PlayerController : MonoBehaviour
     private float curShotDelay = 0f;
     private float maxShotDelay = 0.3f;
 
+    public SpawnManager spawnManager;
+
 
     void Awake()
     {
         anim = GetComponent<Animator>();
+        
     }
     void Start()
     {
@@ -144,6 +147,12 @@ public class PlayerController : MonoBehaviour
                     break;
 
             }
+        }
+        else if(collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet")
+        {
+            spawnManager.RespawnPlayer();
+            gameObject.SetActive(false);
+
         }
     }
 
