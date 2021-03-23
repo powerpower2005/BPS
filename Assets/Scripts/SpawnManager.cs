@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -14,6 +16,13 @@ public class SpawnManager : MonoBehaviour
 
     public GameObject player;
 
+    public Text scoreText;
+    public Image[] lifeImage;
+    public Image[] boomImage;
+    public GameObject gameOverSet;
+
+
+
 
     void Update()
     {
@@ -24,6 +33,37 @@ public class SpawnManager : MonoBehaviour
             SpawnEnemy();
             maxSpawnDelay = Random.Range(0.5f, 2f);
             curSpawnDelay = 0;
+        }
+
+        //UI score
+        PlayerController playerLogic = player.GetComponent<PlayerController>();
+        scoreText.text = string.Format("{0:n0}", playerLogic.score);
+    }
+
+    public void UpdateLifeIcon(int life)
+    {
+        // UI Life Image disable
+        for(int index = 0; index < 3; index++)
+        {
+            lifeImage[index].color = new Color(1, 1, 1, 0);
+        }
+        // UI Life Image enable
+        for (int index = 0; index < life; index++)
+        {
+            lifeImage[index].color = new Color(1, 1, 1, 1);
+        }
+    }
+    public void UpdateBoomIcon(int boom)
+    {
+        // UI Boom Image disable
+        for (int index = 0; index < 3; index++)
+        {
+            boomImage[index].color = new Color(1, 1, 1, 0);
+        }
+        // UI Boom Image enable
+        for (int index = 0; index < boom; index++)
+        {
+            boomImage[index].color = new Color(1, 1, 1, 1);
         }
     }
 
@@ -62,11 +102,26 @@ public class SpawnManager : MonoBehaviour
     {
         Invoke("RespawnPlayerExe", 2f);
         
+        
     }
     void RespawnPlayerExe()
     {
         player.transform.position = Vector3.down * 3.5f;
         player.SetActive(true);
+
+        PlayerController playerLogic = player.GetComponent<PlayerController>();
+        playerLogic.isHit = false;
+        
+    }
+
+    public void GameOver()
+    {
+        gameOverSet.SetActive(true);
+    }
+
+    public void GameReplay()
+    {
+        SceneManager.LoadScene(0);
     }
 }
 

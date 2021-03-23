@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6916424035810325379}
   m_Layer: 0
   m_Name: Enemy B
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -150,12 +150,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.3
+  enemyScore: 3
   health: 15
   sprites:
   - {fileID: -1147401495359466748, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: -7844560889915226194, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   bulletSpeed: 2
-  enemyName: 
+  enemyName: Enemy B
   bulletA: {fileID: 0}
   bulletB: {fileID: 0}
+  itemCoin: {fileID: 0}
+  itemPower: {fileID: 0}
+  itemBoom: {fileID: 0}
   player: {fileID: 0}

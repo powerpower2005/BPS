@@ -6,6 +6,8 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private float speed;
+
+    public int enemyScore;
     [SerializeField]
     private int health;
     [SerializeField]
@@ -22,6 +24,12 @@ public class Enemy : MonoBehaviour
     private GameObject bulletA;
     [SerializeField]
     private GameObject bulletB;
+
+    public GameObject itemCoin;
+    public GameObject itemPower;
+    public GameObject itemBoom;
+
+
 
     public GameObject player;
 
@@ -95,14 +103,39 @@ public class Enemy : MonoBehaviour
         curShotDelay += Time.deltaTime;
     }
 
-    void OnHit(int dmg)
+    public void OnHit(int dmg)
     {
+        if (health <= 0)
+            return;
+
         health -= dmg;
         spriteRenderer.sprite = sprites[1];
         Invoke("ReturnSprite", 0.1f);
 
         if (health <= 0)
         {
+            PlayerController playerLogic = player.GetComponent<PlayerController>();
+            playerLogic.score += enemyScore;
+
+            //Item drop
+            int ran = Random.Range(0, 10);
+            if(ran == 0)
+            {
+                //Boom
+                Instantiate(itemBoom, transform.position, itemBoom.transform.rotation);
+            }
+            else if( 1<= ran || ran <= 3)
+            {
+                //Power
+                Instantiate(itemPower, transform.position, itemPower.transform.rotation);
+
+            }
+            else
+            {
+                //Coin
+                Instantiate(itemCoin, transform.position, itemCoin.transform.rotation);
+
+            }
             Destroy(gameObject);
         }
     }

@@ -19,11 +19,18 @@ public class PlayerController : MonoBehaviour
     private int bulletSpeed;
     [SerializeField]
     private int power;
+    private int maxPower = 3;
+    [SerializeField]
+    private int boom;
+    private int maxBoom = 3;
+    public bool isBoomed;
 
     [SerializeField]
     private GameObject bulletA;
     [SerializeField]
     private GameObject bulletB;
+    [SerializeField]
+    public GameObject boomEffect;
 
     Animator anim;
 
@@ -31,6 +38,12 @@ public class PlayerController : MonoBehaviour
     private float maxShotDelay = 0.3f;
 
     public SpawnManager spawnManager;
+
+
+    public int life;
+    public int score;
+
+    public bool isHit;
 
 
     void Awake()
@@ -48,6 +61,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         Fire();
+        Boom();
         Reload();
     }
 
@@ -124,7 +138,39 @@ public class PlayerController : MonoBehaviour
         curShotDelay += Time.deltaTime;
     }
 
-     void OnTriggerEnter2D(Collider2D collision)
+    void Boom()
+    {
+        if (!Input.GetButton("Fire2"))
+            return;
+        if (isBoomed)
+            return;
+        if (boom == 0)
+            return;
+        boom--;
+        spawnManager.UpdateBoomIcon(boom);
+        isBoomed = true;
+        //1. effect enable, boomEffect disable in 3 secs
+        boomEffect.SetActive(true);
+        Invoke("OffBoomEffect", 3f);
+
+        //2. enemy hit
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        for (int index = 0; index < enemies.Length; index++)
+        {
+            Enemy enemyLogic = enemies[index].GetComponent<Enemy>();
+            enemyLogic.OnHit(1000);
+        }
+
+        //3. enemy bullet disable
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
+        for (int index = 0; index < bullets.Length; index++)
+        {
+            Destroy(bullets[index]);
+        }
+        
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "Border")
         {
@@ -150,9 +196,59 @@ public class PlayerController : MonoBehaviour
         }
         else if(collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet")
         {
-            spawnManager.RespawnPlayer();
-            gameObject.SetActive(false);
+            // More than 2 Bullets make a collision with  player at the same time. it cause a bug that decreases player's life more than 1.
+            // For debug this, Make a boolean variable to know whether being hit or not.
 
+            if (isHit)
+                return;
+
+            isHit = true;
+            life--;
+            spawnManager.UpdateLifeIcon(life);
+
+            if(life == 0)
+            {
+                spawnManager.GameOver();
+            }
+            else
+            {
+                spawnManager.RespawnPlayer();
+            }
+            gameObject.SetActive(false);
+            Destroy(collision.gameObject);
+
+        }
+        else if(collision.gameObject.tag == "Item")
+        {
+            Item item = collision.gameObject.GetComponent<Item>();
+            switch (item.type)
+            {
+                case "Coin":
+                    score += 100;
+                    break;
+                case "Power":
+                    if(power == maxPower)
+                    {
+                        score += 50;
+                    }
+                    else
+                    {
+                        power++;
+                    }
+                    break;
+                case "Boom":
+                   if(boom == maxBoom)
+                    {
+                        score += 50;
+                    }
+                    else
+                    {
+                        boom++;
+                        spawnManager.UpdateBoomIcon(boom);
+                    }
+                    break;
+            }
+            Destroy(collision.gameObject);
         }
     }
 
@@ -180,5 +276,11 @@ public class PlayerController : MonoBehaviour
 
             }
         }
+    }
+
+    void OffBoomEffect()
+    {
+        boomEffect.SetActive(false);
+        isBoomed = false;
     }
 }
