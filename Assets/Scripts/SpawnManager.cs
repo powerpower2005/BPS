@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] enemyObjs;
+    private string[] enemyObjs;
     [SerializeField]
     private Transform[] spawnPoints;
 
@@ -20,6 +20,13 @@ public class SpawnManager : MonoBehaviour
     public Image[] lifeImage;
     public Image[] boomImage;
     public GameObject gameOverSet;
+
+    public ObjectManager objectManager;
+
+    void Awake()
+    {
+        enemyObjs = new string[] { "enemyA", "enemyB", "enemyC" };
+    }
 
 
 
@@ -72,11 +79,15 @@ public class SpawnManager : MonoBehaviour
         int ranEnemy = Random.Range(0, 3);
         int ranPoint = Random.Range(0, 9);
 
-        GameObject enemy = Instantiate(enemyObjs[ranEnemy], spawnPoints[ranPoint].position, spawnPoints[ranPoint].rotation);
+        GameObject enemy = objectManager.MakeObj(enemyObjs[ranEnemy]);
+        enemy.transform.position = spawnPoints[ranPoint].position;
 
         Rigidbody2D rb = enemy.GetComponent<Rigidbody2D>();
+
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
         enemyLogic.player = player;
+        enemyLogic.objectManager = objectManager;
+
         float speed = enemyLogic.Speed;
         Debug.Log(speed);
 

@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour
 
 
     public GameObject player;
+    public ObjectManager objectManager;
 
     private float curShotDelay = 0f;
     private float maxShotDelay = 0.5f;
@@ -51,6 +52,23 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    //When Component is activated this method will be called.
+    void OnEnable()
+    {
+        switch (enemyName)
+        {
+            case "Enemy A":
+                health = 3;
+                break;
+            case "Enemy B":
+                health = 15;
+                break;
+            case "Enemy C":
+                health = 40;
+                break;
+        }
     }
 
     void Start()
@@ -74,7 +92,8 @@ public class Enemy : MonoBehaviour
 
         if(enemyName == "Enemy A")
         {
-            GameObject bullet = Instantiate(bulletA, transform.position, transform.rotation);
+            GameObject bullet = objectManager.MakeObj("bulletEnemyA");
+            bullet.transform.position = transform.position;
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
 
             Vector3 dirVec = (player.transform.position - transform.position).normalized;
@@ -83,8 +102,10 @@ public class Enemy : MonoBehaviour
         }
         else if(enemyName == "Enemy C")
         {
-            GameObject bulletR = Instantiate(bulletB, transform.position + Vector3.right * 0.3f, transform.rotation);
-            GameObject bulletL = Instantiate(bulletB, transform.position + Vector3.left * 0.3f, transform.rotation);
+            GameObject bulletR = objectManager.MakeObj("bulletEnemyB");
+            bulletR.transform.position = transform.position + Vector3.right * 0.3f;
+            GameObject bulletL = objectManager.MakeObj("bulletEnemyB");
+            bulletL.transform.position = transform.position + Vector3.left * 0.3f;
 
             Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
             Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
@@ -122,21 +143,27 @@ public class Enemy : MonoBehaviour
             if(ran == 0)
             {
                 //Boom
-                Instantiate(itemBoom, transform.position, itemBoom.transform.rotation);
+                GameObject itemBoom = objectManager.MakeObj("itemBoom");
+                itemBoom.transform.position = transform.position;
+
             }
             else if( 1<= ran || ran <= 3)
             {
                 //Power
-                Instantiate(itemPower, transform.position, itemPower.transform.rotation);
+                GameObject itemPower = objectManager.MakeObj("itemPower");
+                itemPower.transform.position = transform.position;
 
             }
             else
             {
                 //Coin
-                Instantiate(itemCoin, transform.position, itemCoin.transform.rotation);
+                GameObject itemCoin = objectManager.MakeObj("itemCoin");
+                itemCoin.transform.position = transform.position;
 
             }
-            Destroy(gameObject);
+            //Destroy(gameObject); -> setactive(false)
+            gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
         }
     }
     void ReturnSprite()
@@ -148,16 +175,20 @@ public class Enemy : MonoBehaviour
     {
         if(collision.gameObject.tag == "BorderBullet")
         {
-            Destroy(gameObject);
+            //Destroy(gameObject); -> setactive(false)
+            transform.rotation = Quaternion.identity;
+
         }
         else if(collision.gameObject.tag == "PlayerBullet")
         {
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
-            Destroy(collision.gameObject);
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
+
         }
 
-        
+
     }
 }
 

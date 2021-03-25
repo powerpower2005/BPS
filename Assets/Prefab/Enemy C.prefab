@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.5
   enemyScore: 10
-  health: 30
+  health: 40
   sprites:
   - {fileID: -8421458170528590454, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: 3714015224569861163, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
@@ -158,4 +158,8 @@ MonoBehaviour:
   enemyName: Enemy C
   bulletA: {fileID: 5205269169614043759, guid: f3f37c6ca0358184383d556c5badd6e0, type: 3}
   bulletB: {fileID: 5205269169614043759, guid: 186e07a327834c140b1fac983f9cf50a, type: 3}
+  itemCoin: {fileID: 0}
+  itemPower: {fileID: 0}
+  itemBoom: {fileID: 0}
   player: {fileID: 0}
+  objectManager: {fileID: 0}

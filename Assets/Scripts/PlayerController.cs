@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private float maxShotDelay = 0.3f;
 
     public SpawnManager spawnManager;
+    public ObjectManager objectManager;
 
 
     public int life;
@@ -96,14 +97,17 @@ public class PlayerController : MonoBehaviour
             switch (power)
             {
                 case 1:
-                    GameObject bullet = Instantiate(bulletA, transform.position, transform.rotation);
+                    GameObject bullet = objectManager.MakeObj("bulletPlayerA");
+                    bullet.transform.position = transform.position;
                     Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
                     rb.AddForce(Vector2.up * bulletSpeed);
                     break;
                     
                 case 2:
-                    GameObject bulletR = Instantiate(bulletA, transform.position + Vector3.right * 0.1f, transform.rotation);
-                    GameObject bulletL = Instantiate(bulletA, transform.position + Vector3.left * 0.1f, transform.rotation);
+                    GameObject bulletR = objectManager.MakeObj("bulletPlayerA");
+                    bulletR.transform.position = transform.position + Vector3.right * 0.1f;
+                    GameObject bulletL = objectManager.MakeObj("bulletPlayerA");
+                    bulletL.transform.position = transform.position + Vector3.left * 0.1f;
 
                     Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
                     Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
@@ -111,10 +115,14 @@ public class PlayerController : MonoBehaviour
                     rbR.AddForce(Vector2.up * bulletSpeed);
                     rbL.AddForce(Vector2.up * bulletSpeed);
                     break;
+
                 case 3:
-                    GameObject bulletRR = Instantiate(bulletA, transform.position + Vector3.right * 0.2f, transform.rotation);
-                    GameObject bulletC = Instantiate(bulletB, transform.position, transform.rotation);
-                    GameObject bulletLL = Instantiate(bulletA, transform.position + Vector3.left * 0.2f, transform.rotation);
+                    GameObject bulletRR = objectManager.MakeObj("bulletPlayerA");
+                    bulletRR.transform.position = transform.position + Vector3.right * 0.2f;
+                    GameObject bulletC = objectManager.MakeObj("bulletPlayerB");
+                    bulletC.transform.position = transform.position;
+                    GameObject bulletLL = objectManager.MakeObj("bulletPlayerA");
+                    bulletLL.transform.position = transform.position + Vector3.left * 0.2f;
 
 
                     Rigidbody2D rbRR = bulletRR.GetComponent<Rigidbody2D>();
@@ -154,20 +162,60 @@ public class PlayerController : MonoBehaviour
         Invoke("OffBoomEffect", 3f);
 
         //2. enemy hit
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        for (int index = 0; index < enemies.Length; index++)
+        GameObject[] enemyA = objectManager.GetPool("enemyA");
+        GameObject[] enemyB = objectManager.GetPool("enemyB");
+        GameObject[] enemyC = objectManager.GetPool("enemyC");
+
+        for (int index = 0; index < enemyA.Length; index++)
         {
-            Enemy enemyLogic = enemies[index].GetComponent<Enemy>();
-            enemyLogic.OnHit(1000);
+            if (enemyA[index].activeSelf)
+            {
+                Enemy enemyLogic = enemyA[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+            
+        }
+        for (int index = 0; index < enemyB.Length; index++)
+        {
+            if (enemyB[index].activeSelf)
+            {
+                Enemy enemyLogic = enemyB[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+
+                
+        }
+        for (int index = 0; index < enemyC.Length; index++)
+        {
+            if (enemyC[index].activeSelf)
+            {
+                Enemy enemyLogic = enemyC[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+
+                
         }
 
         //3. enemy bullet disable
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
-        for (int index = 0; index < bullets.Length; index++)
+        GameObject[] bulletA = objectManager.GetPool("bulletEnemyA");
+        GameObject[] bulletB = objectManager.GetPool("bulletEnemyB");
+
+        for (int index = 0; index < bulletA.Length; index++)
         {
-            Destroy(bullets[index]);
+            if (bulletA[index].activeSelf)
+            {
+                bulletA[index].SetActive(false);
+            }
         }
-        
+        for (int index = 0; index < bulletB.Length; index++)
+        {
+            if (bulletB[index].activeSelf)
+            {
+                bulletB[index].SetActive(false);
+            }
+        }
+
+
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -215,7 +263,6 @@ public class PlayerController : MonoBehaviour
                 spawnManager.RespawnPlayer();
             }
             gameObject.SetActive(false);
-            Destroy(collision.gameObject);
 
         }
         else if(collision.gameObject.tag == "Item")
@@ -248,7 +295,7 @@ public class PlayerController : MonoBehaviour
                     }
                     break;
             }
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 

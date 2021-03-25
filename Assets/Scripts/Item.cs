@@ -6,21 +6,17 @@ public class Item : MonoBehaviour
 {
 
     public string type;
-    Rigidbody2D rb;
+    Rigidbody2D rigid;
+    
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.velocity = Vector2.down * 0.3f;
-    }
-    void Start()
-    {
-        
+        rigid = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnEnable()
     {
-        
+        rigid.velocity = Vector2.down * 1.0f;
     }
+
 }
