@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO; // File read
 
 public class SpawnManager : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private Transform[] spawnPoints;
 
-    private float maxSpawnDelay = 1;
+    private float nextSpawnDelay;
     private float curSpawnDelay;
 
     public GameObject player;
@@ -23,23 +24,70 @@ public class SpawnManager : MonoBehaviour
 
     public ObjectManager objectManager;
 
+    public List<Spawn> spawnList;
+    public int spawnIndex;
+    public bool spawnEnd;
+
+
     void Awake()
     {
+        spawnList = new List<Spawn>();
         enemyObjs = new string[] { "enemyA", "enemyB", "enemyC" };
+        ReadSpawnFile();
     }
 
 
+    void ReadSpawnFile()
+    {
+        //#1 initialize
+        spawnList.Clear();
+        spawnIndex = 0;
+        spawnEnd = false;
 
+        //#2 File open
+        TextAsset textFile = Resources.Load("stage0") as TextAsset;
+
+        //#3 String read
+        StringReader stringReader = new StringReader(textFile.text);
+        
+        
+        //#4 spawn Data
+        while (stringReader != null)
+        {
+            string line = stringReader.ReadLine();
+            Debug.Log(line);
+
+            if (line == null)
+                break;
+
+            Spawn spawnData = new Spawn();
+            spawnData.delay = float.Parse(line.Split(',')[0]);
+            spawnData.name = line.Split(',')[1];
+            spawnData.point = int.Parse(line.Split(',')[2]);
+            spawnList.Add(spawnData);
+        }
+
+        // file close
+        stringReader.Close();
+
+
+        // apply delay
+        nextSpawnDelay = spawnList[0].delay;
+
+    }
 
     void Update()
     {
         curSpawnDelay += Time.deltaTime;
 
-        if(curSpawnDelay >= maxSpawnDelay)
+        if(curSpawnDelay >= nextSpawnDelay)
         {
-            SpawnEnemy();
-            maxSpawnDelay = Random.Range(0.5f, 2f);
-            curSpawnDelay = 0;
+            if(curSpawnDelay > nextSpawnDelay && !spawnEnd)
+            {
+                SpawnEnemy();
+                curSpawnDelay = 0;
+
+            }
         }
 
         //UI score
@@ -76,11 +124,23 @@ public class SpawnManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        int ranEnemy = Random.Range(0, 3);
-        int ranPoint = Random.Range(0, 9);
+        int enemyIndex = 0;
+        switch (spawnList[spawnIndex].name)
+        {
+            case "Enemy A":
+                enemyIndex = 0;
+                break;
+            case "Enemy B":
+                enemyIndex = 1;
+                break;
+            case "Enemy C":
+                enemyIndex = 2;
+                break;
+        }
+        int enemyPoint = spawnList[spawnIndex].point;
 
-        GameObject enemy = objectManager.MakeObj(enemyObjs[ranEnemy]);
-        enemy.transform.position = spawnPoints[ranPoint].position;
+        GameObject enemy = objectManager.MakeObj(enemyObjs[enemyIndex]);
+        enemy.transform.position = spawnPoints[enemyPoint].position;
 
         Rigidbody2D rb = enemy.GetComponent<Rigidbody2D>();
 
@@ -91,13 +151,13 @@ public class SpawnManager : MonoBehaviour
         float speed = enemyLogic.Speed;
         Debug.Log(speed);
 
-        if (ranPoint == 5 || ranPoint == 6)
+        if (enemyPoint == 5 || enemyPoint == 6)
         {
             rb.velocity = new Vector2(-1, -1) * speed;
             enemy.transform.Rotate(Vector3.back * 45);
             
         }
-        else if(ranPoint == 7 || ranPoint == 8)
+        else if(enemyPoint == 7 || enemyPoint == 8)
         {
             rb.velocity = new Vector2(1, -1) * speed;
             enemy.transform.Rotate(Vector3.forward * 45);
@@ -107,6 +167,17 @@ public class SpawnManager : MonoBehaviour
         {
             rb.velocity = new Vector2(0, -1) * speed;
         }
+        // spawnIndex increase
+        spawnIndex++;
+        if (spawnIndex == spawnList.Count)
+        {
+            spawnEnd = true;
+            return;
+        }
+
+        // delay
+        nextSpawnDelay = spawnList[spawnIndex].delay;
+
     }
 
     public void RespawnPlayer()

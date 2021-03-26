@@ -60,6 +60,7 @@ public class Enemy : MonoBehaviour
         switch (enemyName)
         {
             case "Enemy A":
+                Debug.Log("1");
                 health = 3;
                 break;
             case "Enemy B":
@@ -147,7 +148,7 @@ public class Enemy : MonoBehaviour
                 itemBoom.transform.position = transform.position;
 
             }
-            else if( 1<= ran || ran <= 3)
+            else if( 1<= ran && ran <= 3)
             {
                 //Power
                 GameObject itemPower = objectManager.MakeObj("itemPower");
@@ -175,7 +176,7 @@ public class Enemy : MonoBehaviour
     {
         if(collision.gameObject.tag == "BorderBullet")
         {
-            //Destroy(gameObject); -> setactive(false)
+            gameObject.SetActive(false);
             transform.rotation = Quaternion.identity;
 
         }
@@ -183,7 +184,6 @@ public class Enemy : MonoBehaviour
         {
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
-            //Destroy(collision.gameObject);
             collision.gameObject.SetActive(false);
 
         }
