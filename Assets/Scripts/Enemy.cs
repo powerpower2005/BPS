@@ -60,7 +60,6 @@ public class Enemy : MonoBehaviour
         switch (enemyName)
         {
             case "Enemy A":
-                Debug.Log("1");
                 health = 3;
                 break;
             case "Enemy B":

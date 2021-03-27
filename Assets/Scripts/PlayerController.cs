@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private int bulletSpeed;
     [SerializeField]
     private int power;
-    private int maxPower = 3;
+    private int maxPower = 6;
     [SerializeField]
     private int boom;
     private int maxBoom = 3;
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     public SpawnManager spawnManager;
     public ObjectManager objectManager;
+
+    public GameObject[] followers;
 
 
     public int life;
@@ -117,6 +120,9 @@ public class PlayerController : MonoBehaviour
                     break;
 
                 case 3:
+                case 4:
+                case 5:
+                case 6:
                     GameObject bulletRR = objectManager.MakeObj("bulletPlayerA");
                     bulletRR.transform.position = transform.position + Vector3.right * 0.2f;
                     GameObject bulletC = objectManager.MakeObj("bulletPlayerB");
@@ -281,6 +287,7 @@ public class PlayerController : MonoBehaviour
                     else
                     {
                         power++;
+                        AddFollower();
                     }
                     break;
                 case "Boom":
@@ -296,6 +303,22 @@ public class PlayerController : MonoBehaviour
                     break;
             }
             collision.gameObject.SetActive(false);
+        }
+    }
+
+    private void AddFollower()
+    {
+        if (power == 4)
+        {
+            followers[0].SetActive(true);
+        }
+        else if (power == 5)
+        {
+            followers[1].SetActive(true);
+        }
+        else if (power == 6)
+        {
+            followers[2].SetActive(true);
         }
     }
 

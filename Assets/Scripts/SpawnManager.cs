@@ -149,7 +149,7 @@ public class SpawnManager : MonoBehaviour
         enemyLogic.objectManager = objectManager;
 
         float speed = enemyLogic.Speed;
-        Debug.Log(speed);
+
 
         if (enemyPoint == 5 || enemyPoint == 6)
         {
