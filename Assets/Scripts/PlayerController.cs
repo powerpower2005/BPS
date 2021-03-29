@@ -205,6 +205,9 @@ public class PlayerController : MonoBehaviour
         //3. enemy bullet disable
         GameObject[] bulletA = objectManager.GetPool("bulletEnemyA");
         GameObject[] bulletB = objectManager.GetPool("bulletEnemyB");
+        GameObject[] bulletC = objectManager.GetPool("bulletEnemyC");
+        GameObject[] bulletD = objectManager.GetPool("bulletEnemyD");
+
 
         for (int index = 0; index < bulletA.Length; index++)
         {
@@ -218,6 +221,20 @@ public class PlayerController : MonoBehaviour
             if (bulletB[index].activeSelf)
             {
                 bulletB[index].SetActive(false);
+            }
+        }
+        for (int index = 0; index < bulletC.Length; index++)
+        {
+            if (bulletC[index].activeSelf)
+            {
+                bulletC[index].SetActive(false);
+            }
+        }
+        for (int index = 0; index < bulletD.Length; index++)
+        {
+            if (bulletD[index].activeSelf)
+            {
+                bulletD[index].SetActive(false);
             }
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
-
+    public GameObject bossAPrefab;
     public GameObject enemyAPrefab;
     public GameObject enemyBPrefab;
     public GameObject enemyCPrefab;
@@ -17,8 +17,11 @@ public class ObjectManager : MonoBehaviour
     public GameObject bulletPlayerBPrefab;
     public GameObject bulletEnemyAPrefab;
     public GameObject bulletEnemyBPrefab;
+    public GameObject bulletEnemyCPrefab;
+    public GameObject bulletEnemyDPrefab;
     public GameObject bulletFollowerPrefab;
 
+    GameObject[] bossA;
     GameObject[] enemyA;
     GameObject[] enemyB;
     GameObject[] enemyC;
@@ -31,6 +34,8 @@ public class ObjectManager : MonoBehaviour
     GameObject[] bulletPlayerB;
     GameObject[] bulletEnemyA;
     GameObject[] bulletEnemyB;
+    GameObject[] bulletEnemyC;
+    GameObject[] bulletEnemyD;
     GameObject[] bulletFollower;
 
     GameObject[] targetPool;
@@ -40,6 +45,7 @@ public class ObjectManager : MonoBehaviour
     // Loading = Obejects pool
     void Awake()
     {
+        bossA = new GameObject[1];
         enemyA = new GameObject[30];
         enemyB = new GameObject[20];
         enemyC = new GameObject[10];
@@ -50,8 +56,10 @@ public class ObjectManager : MonoBehaviour
 
         bulletPlayerA = new GameObject[100];
         bulletPlayerB = new GameObject[100];
-        bulletEnemyA = new GameObject[100];
-        bulletEnemyB = new GameObject[100];
+        bulletEnemyA = new GameObject[200];
+        bulletEnemyB = new GameObject[200];
+        bulletEnemyC = new GameObject[500];
+        bulletEnemyD = new GameObject[500];
         bulletFollower = new GameObject[100];
 
 
@@ -61,7 +69,12 @@ public class ObjectManager : MonoBehaviour
 
     void Generate()
     {
-        for(int index = 0; index< enemyC.Length; index++)
+        for (int index = 0; index < bossA.Length; index++)
+        {
+            bossA[index] = Instantiate(bossAPrefab);
+            bossA[index].SetActive(false);
+        }
+        for (int index = 0; index< enemyC.Length; index++)
         {
             enemyC[index] = Instantiate(enemyCPrefab);
             enemyC[index].SetActive(false);
@@ -120,6 +133,16 @@ public class ObjectManager : MonoBehaviour
             bulletEnemyB[index] = Instantiate(bulletEnemyBPrefab);
             bulletEnemyB[index].SetActive(false);
         }
+        for (int index = 0; index < bulletEnemyC.Length; index++)
+        {
+            bulletEnemyC[index] = Instantiate(bulletEnemyCPrefab);
+            bulletEnemyC[index].SetActive(false);
+        }
+        for (int index = 0; index < bulletEnemyD.Length; index++)
+        {
+            bulletEnemyD[index] = Instantiate(bulletEnemyDPrefab);
+            bulletEnemyD[index].SetActive(false);
+        }
         for (int index = 0; index < bulletFollower.Length; index++)
         {
             bulletFollower[index] = Instantiate(bulletFollowerPrefab);
@@ -135,6 +158,9 @@ public class ObjectManager : MonoBehaviour
     {
         switch (name)
         {
+            case "bossA":
+                targetPool = bossA;
+                break;
             case "enemyA":
                 targetPool = enemyA;
                 break;
@@ -164,6 +190,12 @@ public class ObjectManager : MonoBehaviour
                 break;
             case "bulletEnemyB":
                 targetPool = bulletEnemyB;
+                break;
+            case "bulletEnemyC":
+                targetPool = bulletEnemyC;
+                break;
+            case "bulletEnemyD":
+                targetPool = bulletEnemyD;
                 break;
             case "bulletFollower":
                 targetPool = bulletFollower;
@@ -189,6 +221,9 @@ public class ObjectManager : MonoBehaviour
 
         switch (name)
         {
+            case "bossA":
+                targetPool = bossA;
+                break;
             case "enemyA":
                 targetPool = enemyA;
                 break;
@@ -218,6 +253,12 @@ public class ObjectManager : MonoBehaviour
                 break;
             case "bulletEnemyB":
                 targetPool = bulletEnemyB;
+                break;
+            case "bulletEnemyC":
+                targetPool = bulletEnemyC;
+                break;
+            case "bulletEnemyD":
+                targetPool = bulletEnemyD;
                 break;
             case "bulletFollower":
                 targetPool = bulletFollower;

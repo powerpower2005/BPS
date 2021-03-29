@@ -5,19 +5,18 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public int dmg;
-    // Start is called before the first frame update
-    void Start()
+    public bool isRotate;
+
+     void Update()
     {
-        
+        if (isRotate)
+        {
+            transform.Rotate(Vector3.forward * 10);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "BorderBullet")
         {
