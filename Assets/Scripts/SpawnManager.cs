@@ -7,6 +7,9 @@ using System.IO; // File read
 
 public class SpawnManager : MonoBehaviour
 {
+    public int stage;
+
+
     [SerializeField]
     private string[] enemyObjs;
     [SerializeField]
@@ -34,6 +37,7 @@ public class SpawnManager : MonoBehaviour
         spawnList = new List<Spawn>();
         enemyObjs = new string[] { "enemyA", "enemyB", "enemyC", "bossA" };
         ReadSpawnFile();
+        StageStart();
     }
 
 
@@ -45,7 +49,7 @@ public class SpawnManager : MonoBehaviour
         spawnEnd = false;
 
         //#2 File open
-        TextAsset textFile = Resources.Load("stage0") as TextAsset;
+        TextAsset textFile = Resources.Load("stage" + stage.ToString() ) as TextAsset;
 
         //#3 String read
         StringReader stringReader = new StringReader(textFile.text);
@@ -74,6 +78,28 @@ public class SpawnManager : MonoBehaviour
         // apply delay
         nextSpawnDelay = spawnList[0].delay;
 
+    }
+
+    public void StageStart()
+    {
+        //UI Load
+
+        //Enemy Spawn File Read
+        ReadSpawnFile();
+
+        //Fade In between Scenes
+
+    }
+    public void StageEnd()
+    {
+        //Clear UI Load
+
+        //Next Stage
+        stage++;
+
+        //Fade Out between Scenes
+
+        //Player Reposition
     }
 
     void Update()
@@ -149,6 +175,7 @@ public class SpawnManager : MonoBehaviour
 
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
         enemyLogic.player = player;
+        enemyLogic.spawnManager = this;
         enemyLogic.objectManager = objectManager;
 
         float speed = enemyLogic.Speed;
@@ -197,6 +224,15 @@ public class SpawnManager : MonoBehaviour
         PlayerController playerLogic = player.GetComponent<PlayerController>();
         playerLogic.isHit = false;
         
+    }
+
+    public void CallExplosion(Vector3 pos, string type)
+    {
+        GameObject explosion = objectManager.MakeObj("explosion");
+        Explosion explosionLogic = explosion.GetComponent<Explosion>();
+
+        explosion.transform.position = pos;
+        explosionLogic.StartExplosion(type);
     }
 
     public void GameOver()

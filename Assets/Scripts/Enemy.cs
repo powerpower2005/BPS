@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
 
     public GameObject player;
     public ObjectManager objectManager;
+    public SpawnManager spawnManager;
 
     Animator anim;
 
@@ -355,6 +356,7 @@ public class Enemy : MonoBehaviour
             gameObject.SetActive(false);
             CancelInvoke();
             transform.rotation = Quaternion.identity;
+            spawnManager.CallExplosion(transform.position, enemyName);
         }
     }
     void ReturnSprite()

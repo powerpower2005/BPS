@@ -1,0 +1,15 @@
+4,Boss A, 2
+1,Enemy A,1
+0.3, Enemy A,1
+0.3, Enemy B,1
+0.3, Enemy C,1
+0.3, Enemy B,1
+0.3, Enemy C,1
+0.3, Enemy A,1
+1,Enemy A,3
+0.3, Enemy A,3
+0.3, Enemy A,3
+0.3, Enemy A,3
+0.3, Enemy A,3
+0.3, Enemy A,3
+0.3, Enemy A,3

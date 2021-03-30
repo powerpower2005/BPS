@@ -49,14 +49,46 @@ public class PlayerController : MonoBehaviour
 
     public bool isHit;
 
+    public bool isRespawnTime;
+    SpriteRenderer spriteRenderer;
+
+    public bool[] joyControl;
+    public bool isControl;
+
+    public bool isButtonA;
+    public bool isButtonB;
 
     void Awake()
     {
         anim = GetComponent<Animator>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
-    void Start()
+    private void OnEnable()
     {
+        Unbeatable();
+        Invoke("Unbeatable", 3);
+    }
+
+    void Unbeatable()
+    {
+        isRespawnTime = !isRespawnTime;
+
+        if (isRespawnTime)
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+            for(int index = 0; index<followers.Length; index++)
+            {
+                followers[index].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+            }
+        }
+        else
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            for (int index = 0; index < followers.Length; index++)
+            {
+                followers[index].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+        }
 
     }
 
@@ -69,15 +101,42 @@ public class PlayerController : MonoBehaviour
         Reload();
     }
 
+    public void JoyPanel(int type)
+    {
+        for(int index = 0; index < 9; index++)
+        {
+            joyControl[index] = index == type;
+        }
+    }
+    public void JoyDown()
+    {
+        isControl = true;
+    }
+    public void JoyUp()
+    {
+        isControl = false;
+    }
     void Move()
     {
         float h = Input.GetAxisRaw("Horizontal");
-        if (isTouchedRight && h == 1 || isTouchedLeft && h == -1)
+        float v = Input.GetAxisRaw("Vertical");
+
+        if (joyControl[0]) { h = -1; v = 1; }
+        if (joyControl[1]) { h = 0; v = 1; }
+        if (joyControl[2]) { h = 1; v = 1; }
+        if (joyControl[3]) { h = -1; v = 0; }
+        if (joyControl[4]) { h = 0; v = 0; }
+        if (joyControl[5]) { h = 1; v = 0; }
+        if (joyControl[6]) { h = -1; v = -1; }
+        if (joyControl[7]) { h = 0; v = -1; }
+        if (joyControl[8]) { h = 1; v = -1; }
+
+
+        if (isTouchedRight && h == 1 || isTouchedLeft && h == -1 || !isControl)
         {
             h = 0;
         }
-        float v = Input.GetAxisRaw("Vertical");
-        if (isTouchedTop && v == 1 || isTouchedBottom && v == -1)
+        if (isTouchedTop && v == 1 || isTouchedBottom && v == -1 || !isControl)
         {
             v = 0;
         }
@@ -93,57 +152,79 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ButtonADown()
+    {
+        isButtonA = true;
+    }
+    public void ButtonAUp()
+    {
+        isButtonA = false;
+    }
+    public void ButtonBDown()
+    {
+        isButtonB = true;
+    }
     void Fire()
     {
-        if (Input.GetButton("Fire1") && curShotDelay > maxShotDelay)
+        //Mouse Input
+        //if (!Input.GetButton("Fire1"))
+        //    return;
+
+        //Button Input
+        if (!isButtonA)
+            return;
+
+        if (curShotDelay < maxShotDelay)
+            return;
+
+        
+        switch (power)
         {
-            switch (power)
-            {
-                case 1:
-                    GameObject bullet = objectManager.MakeObj("bulletPlayerA");
-                    bullet.transform.position = transform.position;
-                    Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-                    rb.AddForce(Vector2.up * bulletSpeed);
-                    break;
+            case 1:
+                GameObject bullet = objectManager.MakeObj("bulletPlayerA");
+                bullet.transform.position = transform.position;
+                Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+                rb.AddForce(Vector2.up * bulletSpeed);
+                break;
                     
-                case 2:
-                    GameObject bulletR = objectManager.MakeObj("bulletPlayerA");
-                    bulletR.transform.position = transform.position + Vector3.right * 0.1f;
-                    GameObject bulletL = objectManager.MakeObj("bulletPlayerA");
-                    bulletL.transform.position = transform.position + Vector3.left * 0.1f;
+            case 2:
+                GameObject bulletR = objectManager.MakeObj("bulletPlayerA");
+                bulletR.transform.position = transform.position + Vector3.right * 0.1f;
+                GameObject bulletL = objectManager.MakeObj("bulletPlayerA");
+                bulletL.transform.position = transform.position + Vector3.left * 0.1f;
 
-                    Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
-                    Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
+                Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
+                Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
 
-                    rbR.AddForce(Vector2.up * bulletSpeed);
-                    rbL.AddForce(Vector2.up * bulletSpeed);
-                    break;
+                rbR.AddForce(Vector2.up * bulletSpeed);
+                rbL.AddForce(Vector2.up * bulletSpeed);
+                break;
 
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                    GameObject bulletRR = objectManager.MakeObj("bulletPlayerA");
-                    bulletRR.transform.position = transform.position + Vector3.right * 0.2f;
-                    GameObject bulletC = objectManager.MakeObj("bulletPlayerB");
-                    bulletC.transform.position = transform.position;
-                    GameObject bulletLL = objectManager.MakeObj("bulletPlayerA");
-                    bulletLL.transform.position = transform.position + Vector3.left * 0.2f;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                GameObject bulletRR = objectManager.MakeObj("bulletPlayerA");
+                bulletRR.transform.position = transform.position + Vector3.right * 0.2f;
+                GameObject bulletC = objectManager.MakeObj("bulletPlayerB");
+                bulletC.transform.position = transform.position;
+                GameObject bulletLL = objectManager.MakeObj("bulletPlayerA");
+                bulletLL.transform.position = transform.position + Vector3.left * 0.2f;
 
 
-                    Rigidbody2D rbRR = bulletRR.GetComponent<Rigidbody2D>();
-                    Rigidbody2D rbC = bulletC.GetComponent<Rigidbody2D>();
-                    Rigidbody2D rbLL = bulletLL.GetComponent<Rigidbody2D>();
+                Rigidbody2D rbRR = bulletRR.GetComponent<Rigidbody2D>();
+                Rigidbody2D rbC = bulletC.GetComponent<Rigidbody2D>();
+                Rigidbody2D rbLL = bulletLL.GetComponent<Rigidbody2D>();
 
-                    rbRR.AddForce(Vector2.up * bulletSpeed);
-                    rbC.AddForce(Vector2.up * bulletSpeed);
-                    rbLL.AddForce(Vector2.up * bulletSpeed);
+                rbRR.AddForce(Vector2.up * bulletSpeed);
+                rbC.AddForce(Vector2.up * bulletSpeed);
+                rbLL.AddForce(Vector2.up * bulletSpeed);
 
-                    break;
+                break;
 
             }
             curShotDelay = 0;
-        }
+        
 
     }
 
@@ -154,7 +235,10 @@ public class PlayerController : MonoBehaviour
 
     void Boom()
     {
-        if (!Input.GetButton("Fire2"))
+        //Mouse Input
+        //if (!Input.GetButton("Fire2"))
+        //    return;
+        if (!isButtonB)
             return;
         if (isBoomed)
             return;
@@ -269,13 +353,15 @@ public class PlayerController : MonoBehaviour
         {
             // More than 2 Bullets make a collision with  player at the same time. it cause a bug that decreases player's life more than 1.
             // For debug this, Make a boolean variable to know whether being hit or not.
-
+            if (isRespawnTime)
+                return;
             if (isHit)
                 return;
 
             isHit = true;
             life--;
             spawnManager.UpdateLifeIcon(life);
+            spawnManager.CallExplosion(transform.position, "Player");
 
             if(life == 0)
             {
