@@ -8,6 +8,11 @@ using System.IO; // File read
 public class SpawnManager : MonoBehaviour
 {
     public int stage;
+    public Animator stageAnim;
+    public Animator clearAnim;
+    public Animator fadeAnim;
+    public Transform playerPos;
+
 
 
     [SerializeField]
@@ -49,7 +54,7 @@ public class SpawnManager : MonoBehaviour
         spawnEnd = false;
 
         //#2 File open
-        TextAsset textFile = Resources.Load("stage" + stage.ToString() ) as TextAsset;
+        TextAsset textFile = Resources.Load("stage " + stage.ToString() ) as TextAsset;
 
         //#3 String read
         StringReader stringReader = new StringReader(textFile.text);
@@ -83,23 +88,33 @@ public class SpawnManager : MonoBehaviour
     public void StageStart()
     {
         //UI Load
-
+        stageAnim.SetTrigger("On");
+        stageAnim.GetComponent<Text>().text = "Stage " + stage + "\nStart";
         //Enemy Spawn File Read
         ReadSpawnFile();
 
         //Fade In between Scenes
-
+        fadeAnim.SetTrigger("In");
     }
     public void StageEnd()
     {
         //Clear UI Load
+        clearAnim.SetTrigger("On");
+        clearAnim.GetComponent<Text>().text = "Stage " + stage + "\nClear";
+
+
+        //Fade Out between Scenes
+        fadeAnim.SetTrigger("Out");
+        //Player Reposition
+        player.transform.position = playerPos.position;
 
         //Next Stage
         stage++;
 
-        //Fade Out between Scenes
-
-        //Player Reposition
+        if (stage > 2)
+            Invoke("GameOver", 4.5f);
+        else
+            Invoke("StageStart", 3);
     }
 
     void Update()

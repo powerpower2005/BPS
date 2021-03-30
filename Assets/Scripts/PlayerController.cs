@@ -247,6 +247,7 @@ public class PlayerController : MonoBehaviour
         boom--;
         spawnManager.UpdateBoomIcon(boom);
         isBoomed = true;
+        isButtonB = false;
         //1. effect enable, boomEffect disable in 3 secs
         boomEffect.SetActive(true);
         Invoke("OffBoomEffect", 3f);

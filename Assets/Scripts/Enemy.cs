@@ -357,6 +357,12 @@ public class Enemy : MonoBehaviour
             CancelInvoke();
             transform.rotation = Quaternion.identity;
             spawnManager.CallExplosion(transform.position, enemyName);
+
+            //Boss kill
+            if(enemyName =="Boss A")
+            {
+                spawnManager.StageEnd();
+            }
         }
     }
     void ReturnSprite()
