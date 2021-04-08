@@ -44,6 +44,8 @@ public class Enemy : MonoBehaviour
     public int curPatternCount;
     public int[] maxPatternCount;
 
+    public AudioClip explosionSound;
+
 
 
     public float Speed {
@@ -353,6 +355,7 @@ public class Enemy : MonoBehaviour
 
             }
             //Destroy(gameObject); -> setactive(false)
+            AudioSource.PlayClipAtPoint(explosionSound, transform.position);
             gameObject.SetActive(false);
             CancelInvoke();
             transform.rotation = Quaternion.identity;

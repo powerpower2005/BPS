@@ -177,12 +177,12 @@ public class PlayerController : MonoBehaviour
     void Fire()
     {
         //Mouse Input
-        //if (!Input.GetButton("Fire1"))
-        //    return;
+        if (!Input.GetButton("Fire1"))
+            return;
 
         //Button Input
-        if (!isButtonA)
-            return;
+        //if (!isButtonA)
+        //    return;
 
         if (curShotDelay < maxShotDelay)
             return;
@@ -246,10 +246,10 @@ public class PlayerController : MonoBehaviour
     void Boom()
     {
         //Mouse Input
-        //if (!Input.GetButton("Fire2"))
-        //    return;
-        if (!isButtonB)
+        if (!Input.GetButton("Fire2"))
             return;
+        //if (!isButtonB)
+        //    return;
         if (isBoomed)
             return;
         if (boom == 0)
