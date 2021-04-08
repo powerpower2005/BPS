@@ -73,16 +73,20 @@ public class Enemy : MonoBehaviour
         {
             case "Boss A":
                 health = 3000;
+                Debug.Log(this);
                 Invoke("Stop", 2);
                 break;
             case "Enemy A":
                 health = 3;
+                ReturnSprite();
                 break;
             case "Enemy B":
                 health = 15;
+                ReturnSprite();
                 break;
             case "Enemy C":
                 health = 40;
+                ReturnSprite();
                 break;
         }
     }
@@ -141,16 +145,20 @@ public class Enemy : MonoBehaviour
     void FireForward()
     {
 
-        //Fire 4 bullets
-        GameObject bulletR = objectManager.MakeObj("bulletEnemyB");
+        //Fire 5 bullets
+        Debug.Log(this);
+        GameObject bulletC = objectManager.MakeObj("bulletEnemyC");
+        bulletC.transform.position = transform.position;
+        GameObject bulletR = objectManager.MakeObj("bulletEnemyC");
         bulletR.transform.position = transform.position + Vector3.right * 0.3f;
-        GameObject bulletL = objectManager.MakeObj("bulletEnemyB");
+        GameObject bulletL = objectManager.MakeObj("bulletEnemyC");
         bulletL.transform.position = transform.position + Vector3.left * 0.3f;
         GameObject bulletRR = objectManager.MakeObj("bulletEnemyC");
         bulletRR.transform.position = transform.position + Vector3.right * 0.45f;
         GameObject bulletLL = objectManager.MakeObj("bulletEnemyC");
         bulletLL.transform.position = transform.position + Vector3.left * 0.45f;
 
+        Rigidbody2D rbC = bulletC.GetComponent<Rigidbody2D>();
         Rigidbody2D rbR = bulletR.GetComponent<Rigidbody2D>();
         Rigidbody2D rbL = bulletL.GetComponent<Rigidbody2D>();
         Rigidbody2D rbRR = bulletRR.GetComponent<Rigidbody2D>();
@@ -158,6 +166,7 @@ public class Enemy : MonoBehaviour
 
         Vector3 dirVec = (player.transform.position - transform.position).normalized;
 
+        rbC.AddForce(dirVec * 10, ForceMode2D.Impulse);
         rbR.AddForce(dirVec * 8, ForceMode2D.Impulse);
         rbL.AddForce(dirVec * 8, ForceMode2D.Impulse);
         rbRR.AddForce(dirVec * 6, ForceMode2D.Impulse);
@@ -167,7 +176,7 @@ public class Enemy : MonoBehaviour
 
         if(curPatternCount < maxPatternCount[patternIndex])
         {
-            Invoke("FireFoward", 2);
+            Invoke("FireForward", 2);
         }
         else
         {

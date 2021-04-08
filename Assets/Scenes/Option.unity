@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: c6eafffb88512d640b1d93fbbfa11ff4, type: 2}
-  slider: {fileID: 0}
+  slider: {fileID: 918561672}
 --- !u!1 &922127300
 GameObject:
   m_ObjectHideFlags: 0
