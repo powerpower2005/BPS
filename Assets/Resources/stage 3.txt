@@ -1,15 +1,15 @@
-4,Boss A, 2
-1,Enemy A,1
-0.3, Enemy A,1
-0.3, Enemy B,1
-0.3, Enemy C,1
-0.3, Enemy B,1
-0.3, Enemy C,1
-0.3, Enemy A,1
-1,Enemy A,3
-0.3, Enemy A,3
-0.3, Enemy A,3
-0.3, Enemy A,3
-0.3, Enemy A,3
-0.3, Enemy A,3
-0.3, Enemy A,3
+1,EnemyA,1
+0.3,EnemyA,1
+0.3,EnemyB,1
+0.3,EnemyC,1
+0.3,EnemyB,1
+0.3,EnemyC,1
+0.3,EnemyA,1
+1,EnemyA,3
+0.3,EnemyA,3
+0.3,EnemyB,3
+0.3,EnemyC,3
+0.3,EnemyB,3
+0.3,EnemyC,3
+0.3,EnemyA,3
+4,BossA,2

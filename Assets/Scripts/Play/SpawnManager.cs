@@ -168,16 +168,16 @@ public class SpawnManager : MonoBehaviour
         int enemyIndex = 0;
         switch (spawnList[spawnIndex].name)
         {
-            case "Enemy A":
+            case "EnemyA":
                 enemyIndex = 0;
                 break;
-            case "Enemy B":
+            case "EnemyB":
                 enemyIndex = 1;
                 break;
-            case "Enemy C":
+            case "EnemyC":
                 enemyIndex = 2;
                 break;
-            case "Boss A":
+            case "BossA":
                 enemyIndex = 3;
                 break;
         }
@@ -257,7 +257,7 @@ public class SpawnManager : MonoBehaviour
 
     public void GameReplay()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 }
 

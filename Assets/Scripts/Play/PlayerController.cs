@@ -132,6 +132,15 @@ public class PlayerController : MonoBehaviour
         if (joyControl[8]) { h = 1; v = -1; }
 
 
+        if (isTouchedRight && h == 1 || isTouchedLeft && h == -1)
+        {
+            h = 0;
+        }
+        if (isTouchedTop && v == 1 || isTouchedBottom && v == -1)
+        {
+            v = 0;
+        }
+        /*button input
         if (isTouchedRight && h == 1 || isTouchedLeft && h == -1 || !isControl)
         {
             h = 0;
@@ -140,6 +149,7 @@ public class PlayerController : MonoBehaviour
         {
             v = 0;
         }
+        */
 
         Vector3 curPos = transform.position;
         Vector3 nextPos = new Vector3(h, v, 0) * speed * Time.deltaTime;
